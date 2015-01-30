@@ -1,19 +1,46 @@
 package com.msn.weiboclient;
 
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
+import com.msn.weiboclient.homepage.fragment.MainContentFragment;
+
+import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends ActionBarActivity {
+
+    FrameLayout contentLayout;
+    ListView leftMenuLsv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
+        ActionBar bar = this.getSupportActionBar();
+        //bar.setBackgroundDrawable(new ColorDrawable(Color.RED));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -21,6 +48,13 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+
+
+
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
