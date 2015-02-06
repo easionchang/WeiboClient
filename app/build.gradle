@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.msn.weiboclient"
-        minSdkVersion 10
+        minSdkVersion 7
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -43,4 +43,5 @@ dependencies {
     compile "org.androidannotations:androidannotations-api:$AAVersion"
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.mcxiaoke.volley:library:1.0.10'
 }
