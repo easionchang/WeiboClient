@@ -8,14 +8,10 @@ import android.os.Build;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
-import com.msn.weiboclient.common.utils.URLHelper;
 import com.msn.weiboclient.protocol.http.security.HttpsClientStack;
 import com.msn.weiboclient.protocol.http.security.HttpsHurlStack;
-import com.msn.weiboclient.protocol.http.security.XStringRequest;
 import com.msn.weiboclient.protocol.model.base.IWeiBoRequest;
 
 /**
@@ -43,9 +39,12 @@ public class XHttpClient {
         }
     }
 
-    public void request(IWeiBoRequest request, Response.Listener<String> listener,
-                        Response.ErrorListener errorListener){
-        request(new XStringRequest(request,listener,errorListener));
+    public void post(IWeiBoRequest request, WeiBoResponseListener listener){
+        request(new XStringRequest(request,listener));
+    }
+
+    public void get(IWeiBoRequest request, WeiBoResponseListener listener){
+        request(new XStringRequest(XStringRequest.buildUrl(request),listener));
     }
 
     public <T> void request(Request<T> request){

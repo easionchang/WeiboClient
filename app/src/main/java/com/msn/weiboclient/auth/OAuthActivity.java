@@ -10,15 +10,17 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.msn.weiboclient.R;
 import com.msn.weiboclient.common.utils.URLHelper;
 import com.msn.weiboclient.common.utils.Utility;
+import com.msn.weiboclient.protocol.http.WeiBoResponseListener;
 import com.msn.weiboclient.protocol.http.XHttpClient;
 import com.msn.weiboclient.protocol.model.AccessTokenReq;
+import com.msn.weiboclient.protocol.model.AccessTokenRsp;
+import com.msn.weiboclient.protocol.model.UsersShowReq;
+import com.msn.weiboclient.protocol.model.UsersShowRsp;
+import com.msn.weiboclient.protocol.model.base.IWeiBoResponse;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,25 +59,38 @@ public class OAuthActivity extends ActionBarActivity {
             req.setClient_id("797849368");
             req.setClient_secret("212384aa45b564035e66c768c705ad4d");
             req.setRedirect_uri(URLHelper.DIRECT_URL);
-            XHttpClient.getInstance(this).request(req,
-                    new Response.Listener<String>() {
-                        public void onResponse(String arg0) {
-                            Log.e("Test", arg0);
+            XHttpClient.getInstance(this).post(req,
+                    new WeiBoResponseListener<AccessTokenRsp>() {
+                        public void onSuccess(AccessTokenRsp rsp) {
+
+                            Log.e("Test", rsp.getAccess_token());
+                            getUserInfo(rsp.getAccess_token(),rsp.getUid());
                         }
 
-                    },
-                    new Response.ErrorListener() {
-                        public void onErrorResponse(VolleyError arg0) {
-                            try {
-                                Log.e("Test",new String(arg0.networkResponse.data,"UTF-8")) ;
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
+                        @Override
+                        public void onError(IWeiBoResponse rsp) {
+                            super.onError(rsp);
                         }
-
                     });
         }
 
+    }
+
+    private void getUserInfo(String token,String uid){
+        UsersShowReq usersShowReq = new UsersShowReq();
+        usersShowReq.setAccess_token(token);
+        usersShowReq.setUid(uid);
+        XHttpClient.getInstance(this).get(usersShowReq,new WeiBoResponseListener<UsersShowRsp>() {
+            public void onSuccess(UsersShowRsp rsp) {
+
+                Log.e("Test", rsp.getScreen_name());
+            }
+
+            @Override
+            public void onError(IWeiBoResponse rsp) {
+                super.onError(rsp);
+            }
+        });
     }
 
 

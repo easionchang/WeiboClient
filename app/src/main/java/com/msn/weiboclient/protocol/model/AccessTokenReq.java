@@ -7,8 +7,6 @@ import com.msn.weiboclient.protocol.model.base.IWeiBoRequest;
  * Created by Msn on 2015/2/5.
  */
 public class AccessTokenReq extends IWeiBoRequest {
-    public static String URL = URLHelper.WEIBO_HOST_URL+"oauth2/access_token";
-
     private String client_id;
     private String client_secret;
     private String grant_type = "authorization_code";
@@ -16,7 +14,7 @@ public class AccessTokenReq extends IWeiBoRequest {
     private String redirect_uri;
 
     public AccessTokenReq(){
-        url = URL;
+        url = URLHelper.WEIBO_HOST_URL+"oauth2/access_token";
     }
 
     public String getClient_id() {
