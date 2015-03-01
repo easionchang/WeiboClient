@@ -9,10 +9,15 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.SimpleCursorAdapter;
 
+import com.j256.ormlite.dao.Dao;
 import com.msn.weiboclient.R;
 import com.msn.weiboclient.common.utils.URLHelper;
 import com.msn.weiboclient.common.utils.Utility;
+import com.msn.weiboclient.db.CommonDao;
+import com.msn.weiboclient.db.DBHelper;
+import com.msn.weiboclient.db.vo.UserInfoVO;
 import com.msn.weiboclient.protocol.http.WeiBoResponseListener;
 import com.msn.weiboclient.protocol.http.XHttpClient;
 import com.msn.weiboclient.protocol.model.AccessTokenReq;
@@ -21,6 +26,7 @@ import com.msn.weiboclient.protocol.model.UsersShowReq;
 import com.msn.weiboclient.protocol.model.UsersShowRsp;
 import com.msn.weiboclient.protocol.model.base.IWeiBoResponse;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,10 +73,7 @@ public class OAuthActivity extends ActionBarActivity {
                             getUserInfo(rsp.getAccess_token(),rsp.getUid());
                         }
 
-                        @Override
-                        public void onError(IWeiBoResponse rsp) {
-                            super.onError(rsp);
-                        }
+
                     });
         }
 
@@ -81,7 +84,14 @@ public class OAuthActivity extends ActionBarActivity {
         usersShowReq.setAccess_token(token);
         usersShowReq.setUid(uid);
         XHttpClient.getInstance(this).get(usersShowReq,new WeiBoResponseListener<UsersShowRsp>() {
-            public void onSuccess(UsersShowRsp rsp) {
+            public void onSuccess(UsersShowRsp rsp) throws Exception{
+                UserInfoVO vo = new UserInfoVO();
+                vo.setId(rsp.getId());
+                vo.setIdstr(rsp.getIdstr());
+                vo.setName(rsp.getName());
+                vo.setScreen_name(rsp.getScreen_name());
+                Dao<UserInfoVO,String> dao = DBHelper.getDao(OAuthActivity.this,UserInfoVO.class,String.class);
+                dao.createOrUpdate(vo);
 
                 Log.e("Test", rsp.getScreen_name());
             }

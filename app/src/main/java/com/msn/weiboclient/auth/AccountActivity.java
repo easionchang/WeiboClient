@@ -1,27 +1,98 @@
 package com.msn.weiboclient.auth;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import com.j256.ormlite.dao.Dao;
 import com.msn.weiboclient.R;
+import com.msn.weiboclient.db.DBHelper;
+import com.msn.weiboclient.db.vo.UserInfoVO;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountActivity extends ActionBarActivity {
+public class AccountActivity extends ActionBarActivity
+        implements LoaderManager.LoaderCallbacks<List<UserInfoVO>>{
+    public static final int LOADER_USER_LIST = 0;
+
+    private List<UserInfoVO> allUser = new ArrayList<>();
+    private ListView userListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
+        Log.e("Test","onCreate...............");
+        getSupportLoaderManager().initLoader(LOADER_USER_LIST,null,this).forceLoad();
 
+        userListView = (ListView)findViewById(R.id.list);
+
+    }
+
+    private List<String> getShowName(){
+        List<String> userNameList = new ArrayList<>();
+        for (int i=0;i<allUser.size();i++){
+            userNameList.add(allUser.get(i).getScreen_name());
+        }
+        return userNameList;
+    }
+
+    @Override
+    public Loader<List<UserInfoVO>> onCreateLoader(int id, Bundle args) {
+        Log.e("Test","onCreateLoader...............");
+        return new UserInfoLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<UserInfoVO>> loader, List<UserInfoVO> data) {
+        allUser = data;
+        Log.e("Test","user size====="+data.size());
+        for (int i=0;i<data.size();i++){
+            Log.e("Test",">>>>>>>>>>>>>>>>>>>>>>>."+data.get(i).getScreen_name());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,android.R.id.text1,getShowName());
+        userListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<UserInfoVO>> loader) {
+
+    }
+
+    private static class UserInfoLoader extends AsyncTaskLoader<List<UserInfoVO>>{
+        //TODO 静态内部类加上若引用防止内存泄露
+        private Context context;
+        public UserInfoLoader(Context context){
+            super(context);
+            this.context = context;
+        }
+
+
+        @Override
+        public List<UserInfoVO> loadInBackground() {
+            try {
+                Log.e("Test","loadInBackground....");
+                Dao<UserInfoVO,String> dao = DBHelper.getDao(context,UserInfoVO.class,String.class);
+                return dao.queryForAll();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
 

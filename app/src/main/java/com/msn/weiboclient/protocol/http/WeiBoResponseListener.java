@@ -14,6 +14,7 @@ import com.msn.weiboclient.protocol.model.base.IWeiBoResponse;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 
 /**
  * Created by Msn on 2015/2/6.
@@ -30,7 +31,15 @@ public abstract class WeiBoResponseListener<T extends IWeiBoResponse> implements
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         T rsp = (T)gson.fromJson(response,(Class)params[0]);
-        onSuccess(rsp);
+        try {
+            onSuccess(rsp);
+        } catch (SQLException e) {
+            Log.e("Test","数据库出错了",e);
+            Toast.makeText(WeiBoApplication.context,"数据库出错了",Toast.LENGTH_LONG).show();
+        }catch (Exception e) {
+            Log.e("Test","出错了",e);
+            Toast.makeText(WeiBoApplication.context,"出错了",Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onErrorResponse(VolleyError error) {
@@ -41,14 +50,14 @@ public abstract class WeiBoResponseListener<T extends IWeiBoResponse> implements
             IWeiBoResponse rsp = gson.fromJson(errorRsp,IWeiBoResponse.class);
             Log.e("Test", "errorRsp=="+errorRsp) ;
             Toast.makeText(WeiBoApplication.context,rsp.getError_description(),Toast.LENGTH_LONG).show();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(WeiBoApplication.context,"出错了",Toast.LENGTH_LONG).show();
         }
     }
+    public abstract void onSuccess (T rsp) throws Exception;
 
-    public abstract void onSuccess(T rsp);
-
-    public void onError(IWeiBoResponse rsp){
+    public void onError  (IWeiBoResponse rsp) {
 
     }
 }
