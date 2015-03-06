@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Adapter;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends ActionBarActivity {
+    public static final String ACEESS_TOKEN_TAG = "ACEESS_TOKEN_TAG";
 
     FrameLayout contentLayout;
     ListView leftMenuLsv;
@@ -37,9 +39,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ActionBar bar = this.getSupportActionBar();
         //bar.setBackgroundDrawable(new ColorDrawable(Color.RED));
+
+        MainContentFragment fragment = (MainContentFragment)getSupportFragmentManager()
+                                            .findFragmentById(R.id.content);
+
+        fragment.showTimeline(getIntent().getStringExtra(ACEESS_TOKEN_TAG));
     }
 
     @Override

@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">WeiboClient</string>
+    <string name="app_name">TinyWeibo</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_add_acount">添加账号</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_account">请添加微博账号</string>
     <string name="title_activity_oauth">OAuthActivity</string>
     <string name="action_settings">Settings</string>
+
+    <string name="create_source_str">%1$s  %2$s</string>
+    <string name="name_content_str">%1$s  %2$s</string>
+    <!-- time -->
+    <string name="year">年前</string>
+    <string name="month">月前</string>
+    <string name="day">天前</string>
+    <string name="hour">小时前</string>
+    <string name="min">分钟前</string>
+    <string name="sec">秒前</string>
+    <string name="justnow">刚刚</string>
+    <string name="yesterday">昨天</string>
+    <string name="the_day_before_yesterday">前天</string>
+    <string name="today">今天</string>
+    <string name="date_format">M月d日 HH:mm</string>
+    <string name="year_format">yyyy年 M月d日 HH:mm</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 </resources>

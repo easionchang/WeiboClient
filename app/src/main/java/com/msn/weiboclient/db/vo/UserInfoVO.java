@@ -13,6 +13,8 @@ public class UserInfoVO {
     public static final String IDSTR = "IDSTR";
     public static final String SCREEN_NAME = "SCREEN_NAME";
     public static final String NAME = "NAME";
+    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+
 
     @DatabaseField(id = true)
     private String id;
@@ -22,7 +24,18 @@ public class UserInfoVO {
     private String screen_name;
     @DatabaseField
     private String name;
+    @DatabaseField
+    private String access_token;
 
+    private String profile_image_url;
+
+    public String getProfile_image_url() {
+        return profile_image_url;
+    }
+
+    public void setProfile_image_url(String profile_image_url) {
+        this.profile_image_url = profile_image_url;
+    }
 
     public String getId() {
         return id;
@@ -55,4 +68,15 @@ public class UserInfoVO {
     public void setName(String name) {
         this.name = name;
     }
+
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
+    }
+
+
 }

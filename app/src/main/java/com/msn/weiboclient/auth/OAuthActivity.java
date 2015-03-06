@@ -79,7 +79,7 @@ public class OAuthActivity extends ActionBarActivity {
 
     }
 
-    private void getUserInfo(String token,String uid){
+    private void getUserInfo(final String token,String uid){
         UsersShowReq usersShowReq = new UsersShowReq();
         usersShowReq.setAccess_token(token);
         usersShowReq.setUid(uid);
@@ -87,6 +87,7 @@ public class OAuthActivity extends ActionBarActivity {
             public void onSuccess(UsersShowRsp rsp) throws Exception{
                 UserInfoVO vo = new UserInfoVO();
                 vo.setId(rsp.getId());
+                vo.setAccess_token(token);
                 vo.setIdstr(rsp.getIdstr());
                 vo.setName(rsp.getName());
                 vo.setScreen_name(rsp.getScreen_name());

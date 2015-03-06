@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="5dp"
+    card_view:cardBackgroundColor="#FEFEFE"
+    card_view:cardCornerRadius="0dp"
+    card_view:contentPaddingBottom="2dp"
+    card_view:contentPaddingTop="2dp">
+    <RelativeLayout
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/profile_image"
+            android:layout_alignTop="@+id/profile_image"
+            android:textSize="15dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/created_and_source_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13dp"
+            android:layout_toRightOf="@+id/profile_image"
+            android:layout_alignBottom="@+id/profile_image"/>
+
+        <TextView
+            android:id="@+id/content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/profile_image"
+            android:gravity="left"
+            android:textSize="15sp"
+            android:textColor="#ff353535"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_margin="5dp"/>
+        
+        <ImageView
+            android:id="@+id/thumbnail_imgv"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_below="@id/content_tv"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone"/>
+
+        <com.msn.weiboclient.component.view.NoScrollGridView
+            android:id="@+id/thumbnail_grdv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/thumbnail_imgv"
+            android:numColumns="3"
+            android:columnWidth="90dp"
+            android:stretchMode="none"
+            android:visibility="gone"
+            android:layout_marginLeft="5dp"
+            android:horizontalSpacing="3dp"
+            android:verticalSpacing="3dp"  />
+
+        <!-- 转载内容 -->
+        <View
+            android:id="@+id/repost_line"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/thumbnail_grdv"
+            android:background="#ffeeeeee"
+            android:layout_margin="5dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/repost_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/repost_line"
+            android:gravity="left"
+            android:textSize="15sp"
+            android:textColor="#ff353535"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_margin="5dp"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/repost_imgv"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_below="@id/repost_content"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone"/>
+
+        <com.msn.weiboclient.component.view.NoScrollGridView
+            android:id="@+id/repost_grdv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/repost_imgv"
+            android:numColumns="3"
+            android:columnWidth="90dp"
+            android:stretchMode="none"
+            android:visibility="gone"
+            android:layout_marginLeft="5dp"
+            android:horizontalSpacing="3dp"
+            android:verticalSpacing="3dp"  />
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

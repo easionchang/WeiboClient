@@ -12,13 +12,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.j256.ormlite.dao.Dao;
+import com.msn.weiboclient.MainActivity;
 import com.msn.weiboclient.R;
 import com.msn.weiboclient.db.DBHelper;
 import com.msn.weiboclient.db.vo.UserInfoVO;
+import com.msn.weiboclient.protocol.http.WeiBoResponseListener;
+import com.msn.weiboclient.protocol.http.XHttpClient;
+import com.msn.weiboclient.protocol.model.FriendsTimelineReq;
+import com.msn.weiboclient.protocol.model.FriendsTimelineRsp;
+import com.msn.weiboclient.protocol.model.base.IWeiBoResponse;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,7 +47,24 @@ public class AccountActivity extends ActionBarActivity
         getSupportLoaderManager().initLoader(LOADER_USER_LIST,null,this).forceLoad();
 
         userListView = (ListView)findViewById(R.id.list);
-
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                UserInfoVO userInfoVO = allUser.get(position);
+                Intent intent = new Intent();
+                intent.setClass(AccountActivity.this,MainActivity.class);
+                intent.putExtra(MainActivity.ACEESS_TOKEN_TAG,userInfoVO.getAccess_token());
+                AccountActivity.this.startActivity(intent);
+//                FriendsTimelineReq timelineReq = new FriendsTimelineReq();
+//                timelineReq.setAccess_token(userInfoVO.getAccess_token());
+//                XHttpClient.getInstance(AccountActivity.this).get(timelineReq,new WeiBoResponseListener<FriendsTimelineRsp>() {
+//                    @Override
+//                    public void onSuccess(FriendsTimelineRsp rsp) throws Exception {
+//
+//                    }
+//                });
+            }
+        });
     }
 
     private List<String> getShowName(){
@@ -91,7 +116,7 @@ public class AccountActivity extends ActionBarActivity
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            return null;
+            return new ArrayList<UserInfoVO>();
         }
     }
 

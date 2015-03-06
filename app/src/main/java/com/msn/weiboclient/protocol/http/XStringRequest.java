@@ -53,7 +53,9 @@ public class XStringRequest extends StringRequest {
         for (Field f : fields){
             try {
                 f.setAccessible(true);
-                url = url + (f.getName()+"="+f.get(request).toString()+"&");
+                if(f.get(request) != null){
+                    url = url + (f.getName()+"="+f.get(request).toString()+"&");
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
