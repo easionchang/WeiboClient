@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:dountProgress="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:padding="3dip"
+    tools:context="com.msn.support.gallery.GalleryItemFragment">
+
+    <com.msn.support.view.DonutProgress
+        android:id="@+id/item_pbar"
+        android:layout_gravity="center"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        dountProgress:donut_text_color="#9ACC02"
+        dountProgress:donut_finished_color="#9ACC02"/>
+
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/item_imgv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_blank_fragment" />
+
+</FrameLayout>

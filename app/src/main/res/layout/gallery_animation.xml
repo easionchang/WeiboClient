@@ -1,0 +1,41 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+     <com.msn.support.sysbugfixed.ViewPagerFixed
+         android:id="@+id/gallery_vpager"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"/>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:orientation="horizontal"
+     >
+
+        <TextView
+            android:id="@+id/position_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="35sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/"
+            android:textColor="#fff"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/sum_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="24sp"/>
+
+    </LinearLayout>
+</FrameLayout>
+

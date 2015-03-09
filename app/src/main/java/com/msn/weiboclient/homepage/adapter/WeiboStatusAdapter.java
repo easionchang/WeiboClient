@@ -3,7 +3,6 @@ package com.msn.weiboclient.homepage.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.msn.weiboclient.R;
 import com.msn.weiboclient.common.utils.TimeUtility;
+import com.msn.support.gallery.GalleryAnimationActivity;
 import com.msn.weiboclient.protocol.vo.TimelineVO;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -98,9 +98,11 @@ public class WeiboStatusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void showItem(ItemHolder myViewHolder,int i){
-        TimelineVO timelineVO = timelineVOList.get(i);
+        final TimelineVO timelineVO = timelineVOList.get(i);
         myViewHolder.mContentTv.setText(timelineVO.getText());
-        myViewHolder.mNameTv.setText(timelineVO.getUser().getScreen_name());
+        if(timelineVO.getUser() != null){
+            myViewHolder.mNameTv.setText(timelineVO.getUser().getScreen_name());
+        }
         myViewHolder.mCreateAndSourceTv.setText(
                 String.format(mContext.getString(R.string.create_source_str),
                         TimeUtility.getListTime(timelineVO.getCreated_at()),
@@ -124,6 +126,15 @@ public class WeiboStatusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ImageLoader.getInstance().displayImage(
                         timelineVO.getPic_urls().get(0).getThumbnail_pic(),
                         myViewHolder.mThumbnailImgv);
+                myViewHolder.mThumbnailImgv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mContext.startActivity(
+                                GalleryAnimationActivity.newIntent(
+                                        getImgUrls(timelineVO.getPic_urls().get(0).getThumbnail_pic()),
+                                        0));
+                    }
+                });
             }
         }
         //转发内容
@@ -132,13 +143,20 @@ public class WeiboStatusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         myViewHolder.mRepostImgv.setVisibility(View.GONE);
         myViewHolder.mRepostGrdv.setVisibility(View.GONE);
         if(timelineVO.getRetweeted_status() != null){
-            TimelineVO repostVO = timelineVO.getRetweeted_status();
+            final TimelineVO repostVO = timelineVO.getRetweeted_status();
             myViewHolder.mRepostLine.setVisibility(View.VISIBLE);
             myViewHolder.mRepostContentTv.setVisibility(View.VISIBLE);
-            myViewHolder.mRepostContentTv.setText(
-                    String.format(mContext.getString(R.string.name_content_str),
-                            "@"+repostVO.getUser().getName(),
-                            repostVO.getText()));
+            if(repostVO.getUser() != null){
+                myViewHolder.mRepostContentTv.setText(
+                        String.format(mContext.getString(R.string.name_content_str),
+                                "@"+repostVO.getUser().getName(),
+                                repostVO.getText()));
+            }else{
+                myViewHolder.mRepostContentTv.setText(
+                        String.format(mContext.getString(R.string.name_content_str),
+                                "",
+                                repostVO.getText()));
+            }
             if(repostVO.hasPicture()){
                 if(repostVO.isMultiPics()){
                     myViewHolder.mRepostGrdv.setVisibility(View.VISIBLE);
@@ -151,9 +169,25 @@ public class WeiboStatusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     ImageLoader.getInstance().displayImage(
                             repostVO.getPic_urls().get(0).getThumbnail_pic(),
                             myViewHolder.mRepostImgv);
+
+                    myViewHolder.mRepostImgv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mContext.startActivity(
+                                    GalleryAnimationActivity.newIntent(
+                                            getImgUrls(repostVO.getPic_urls().get(0).getThumbnail_pic()),
+                                            0));
+                        }
+                    });
                 }
             }
         }
+    }
+
+    private String[] getImgUrls(String url){
+        String[] urls = new String[1];
+        urls[0] = url.replace("thumbnail", "large");
+        return urls;
     }
 
 

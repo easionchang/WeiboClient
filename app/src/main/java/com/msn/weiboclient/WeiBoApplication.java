@@ -24,13 +24,18 @@ import java.io.File;
  * Created by Msn on 2015/2/6.
  */
 public class WeiBoApplication extends Application {
-    public static Context context;
+    //singleton
+    private static WeiBoApplication globalContext = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        context = getApplicationContext();
+        globalContext = this;
         initImageLoader();
+    }
+
+    public static WeiBoApplication getInstance(){
+        return globalContext;
     }
 
 
@@ -48,7 +53,7 @@ public class WeiBoApplication extends Application {
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 this)
-                .memoryCacheExtraOptions(480, 800)// 缓存在内存的图片的宽和高度
+                //.memoryCacheExtraOptions(480, 800)// 缓存在内存的图片的宽和高度
                 .memoryCache(new WeakMemoryCache())
                 .memoryCacheSize(2 * 1024 * 1024) //缓存到内存的最大数据
                 .diskCacheSize(100 * 1024 * 1024) //缓存到文件的最大数据

@@ -31,6 +31,11 @@
         <activity
             android:name=".homepage.Main2Activity"
             android:label="@string/title_activity_main2" />
+        <activity
+            android:name="com.msn.support.gallery.GalleryAnimationActivity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/CommonGalleryTheme"/>
+
     </application>
 
 </manifest>

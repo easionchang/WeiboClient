@@ -35,10 +35,10 @@ public abstract class WeiBoResponseListener<T extends IWeiBoResponse> implements
             onSuccess(rsp);
         } catch (SQLException e) {
             Log.e("Test","数据库出错了",e);
-            Toast.makeText(WeiBoApplication.context,"数据库出错了",Toast.LENGTH_LONG).show();
+            Toast.makeText(WeiBoApplication.getInstance(),"数据库出错了",Toast.LENGTH_LONG).show();
         }catch (Exception e) {
             Log.e("Test","出错了",e);
-            Toast.makeText(WeiBoApplication.context,"出错了",Toast.LENGTH_LONG).show();
+            Toast.makeText(WeiBoApplication.getInstance(),"出错了",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -49,10 +49,10 @@ public abstract class WeiBoResponseListener<T extends IWeiBoResponse> implements
             Gson gson = builder.create();
             IWeiBoResponse rsp = gson.fromJson(errorRsp,IWeiBoResponse.class);
             Log.e("Test", "errorRsp=="+errorRsp) ;
-            Toast.makeText(WeiBoApplication.context,rsp.getError_description(),Toast.LENGTH_LONG).show();
+            Toast.makeText(WeiBoApplication.getInstance(),rsp.getError_description(),Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(WeiBoApplication.context,"出错了",Toast.LENGTH_LONG).show();
+            Toast.makeText(WeiBoApplication.getInstance(),"出错了",Toast.LENGTH_LONG).show();
         }
     }
     public abstract void onSuccess (T rsp) throws Exception;

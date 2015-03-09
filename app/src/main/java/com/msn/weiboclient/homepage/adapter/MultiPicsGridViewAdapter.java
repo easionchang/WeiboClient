@@ -1,19 +1,14 @@
 package com.msn.weiboclient.homepage.adapter;
 
 import android.content.Context;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 
 import com.msn.weiboclient.R;
+import com.msn.support.gallery.GalleryAnimationActivity;
 import com.msn.weiboclient.protocol.vo.TimelineVO;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -35,7 +30,7 @@ public class MultiPicsGridViewAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         //Log.e("Test","getView================"+position+"  mPicUrls.size="+mPicUrls.size());
         ImageView imageView = null;
         View view = null;
@@ -60,7 +55,24 @@ public class MultiPicsGridViewAdapter extends BaseAdapter{
         ImageLoader.getInstance().displayImage(
                 mPicUrls.get(position).getThumbnail_pic(),
                 imageView);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mContext.startActivity(GalleryAnimationActivity.newIntent(getImgUrl(),position));
+            }
+        });
         return view;
+    }
+
+    private String[] getImgUrl(){
+        String[] urls = new String[mPicUrls.size()];
+        int index = 0;
+        for(TimelineVO.ThumbnailVO vo:mPicUrls){
+            urls[index] = vo.getThumbnail_pic().replace("thumbnail", "large");
+            index++;
+        }
+        return urls;
     }
 
     @Override

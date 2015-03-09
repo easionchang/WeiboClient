@@ -18,20 +18,20 @@ public class TimeUtility {
     private static int MILL_HOUR = MILL_MIN * 60;
     private static int MILL_DAY = MILL_HOUR * 24;
 
-    private static String JUST_NOW = WeiBoApplication.context.getString(R.string.justnow);
-    private static String MIN = WeiBoApplication.context.getString(R.string.min);
-    private static String HOUR = WeiBoApplication.context.getString(R.string.hour);
-    private static String DAY = WeiBoApplication.context.getString(R.string.day);
-    private static String MONTH =WeiBoApplication.context.getString(R.string.month);
-    private static String YEAR = WeiBoApplication.context.getString(R.string.year);
+    private static String JUST_NOW = WeiBoApplication.getInstance().getString(R.string.justnow);
+    private static String MIN = WeiBoApplication.getInstance().getString(R.string.min);
+    private static String HOUR = WeiBoApplication.getInstance().getString(R.string.hour);
+    private static String DAY = WeiBoApplication.getInstance().getString(R.string.day);
+    private static String MONTH =WeiBoApplication.getInstance().getString(R.string.month);
+    private static String YEAR = WeiBoApplication.getInstance().getString(R.string.year);
 
-    private static String YESTER_DAY = WeiBoApplication.context.getString(R.string.yesterday);
-    private static String THE_DAY_BEFORE_YESTER_DAY = WeiBoApplication.context
+    private static String YESTER_DAY = WeiBoApplication.getInstance().getString(R.string.yesterday);
+    private static String THE_DAY_BEFORE_YESTER_DAY = WeiBoApplication.getInstance()
             .getString(R.string.the_day_before_yesterday);
-    private static String TODAY = WeiBoApplication.context.getString(R.string.today);
+    private static String TODAY = WeiBoApplication.getInstance().getString(R.string.today);
 
-    private static String DATE_FORMAT = WeiBoApplication.context.getString(R.string.date_format);
-    private static String YEAR_FORMAT = WeiBoApplication.context.getString(R.string.year_format);
+    private static String DATE_FORMAT = WeiBoApplication.getInstance().getString(R.string.date_format);
+    private static String YEAR_FORMAT = WeiBoApplication.getInstance().getString(R.string.year_format);
 
     private static Calendar msgCalendar = null;
     private static java.text.SimpleDateFormat dayFormat = null;
