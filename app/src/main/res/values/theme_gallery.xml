@@ -2,7 +2,17 @@
 <resources>
 
     <style name="CommonGalleryTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowBackground">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item><!-- 背景透明 -->
+        <item name="android:windowIsTranslucent">true</item><!-- Activity透明 -->
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+
+
+
     </style>
 
 

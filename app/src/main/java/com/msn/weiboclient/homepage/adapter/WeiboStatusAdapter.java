@@ -1,8 +1,11 @@
 package com.msn.weiboclient.homepage.adapter;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,10 +132,19 @@ public class WeiboStatusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 myViewHolder.mThumbnailImgv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ImageView imgView = (ImageView)v;
+                        Log.e("Test","getDrawable.height="+imgView.getDrawable().getBounds().height()
+                                 +" viewHeight="+v.getHeight()
+                                 +" getDrawable.width="+imgView.getDrawable().getBounds().width()
+                                 +" viewWidth="+v.getWidth());
+                        int location[] = new int[4];
+                        v.getLocationOnScreen(location);
+                        location[2] = v.getWidth();
+                        location[3] = v.getHeight();
                         mContext.startActivity(
                                 GalleryAnimationActivity.newIntent(
                                         getImgUrls(timelineVO.getPic_urls().get(0).getThumbnail_pic()),
-                                        0));
+                                        0,location));
                     }
                 });
             }
@@ -173,10 +185,14 @@ public class WeiboStatusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     myViewHolder.mRepostImgv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            int location[] = new int[4];
+                            v.getLocationOnScreen(location);
+                            location[2] = v.getWidth();
+                            location[3] = v.getHeight();
                             mContext.startActivity(
                                     GalleryAnimationActivity.newIntent(
                                             getImgUrls(repostVO.getPic_urls().get(0).getThumbnail_pic()),
-                                            0));
+                                            0,location));
                         }
                     });
                 }

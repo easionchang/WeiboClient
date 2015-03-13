@@ -1,6 +1,9 @@
 package com.msn.weiboclient.homepage.adapter;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +62,16 @@ public class MultiPicsGridViewAdapter extends BaseAdapter{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(GalleryAnimationActivity.newIntent(getImgUrl(),position));
+//                Rect location = new Rect();
+//                Point p = new Point();
+//
+//                v.getGlobalVisibleRect(location,p);
+//                Log.e("Test","p.x="+p.x+" p.y="+p.y);
+                int location[] = new int[4];
+                v.getLocationOnScreen(location);
+                location[2] = v.getWidth();
+                location[3] = v.getHeight();
+                mContext.startActivity(GalleryAnimationActivity.newIntent(getImgUrl(),position,location));
             }
         });
         return view;

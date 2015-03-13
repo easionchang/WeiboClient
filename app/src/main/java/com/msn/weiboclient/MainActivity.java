@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.msn.support.utils.DisplayUtil;
 import com.msn.weiboclient.homepage.fragment.MainContentFragment;
 
 import org.androidannotations.annotations.AfterInject;
@@ -46,6 +47,12 @@ public class MainActivity extends ActionBarActivity {
                                             .findFragmentById(R.id.content);
 
         fragment.showTimeline(getIntent().getStringExtra(ACEESS_TOKEN_TAG));
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        DisplayUtil.init(this);
     }
 
     @Override

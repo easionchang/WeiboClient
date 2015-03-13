@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.SimpleCursorAdapter;
 
 import com.j256.ormlite.dao.Dao;
+import com.msn.support.utils.DisplayUtil;
 import com.msn.weiboclient.R;
 import com.msn.weiboclient.common.utils.URLHelper;
 import com.msn.weiboclient.common.utils.Utility;
@@ -46,6 +47,8 @@ public class OAuthActivity extends ActionBarActivity {
         String oauthUrl = getWeiboOAuthUrl();
         webView.loadUrl(oauthUrl);
     }
+
+
 
     class MyWebViewClient extends WebViewClient {
         @Override

@@ -26,4 +26,10 @@
     <string name="year_format">yyyy年 M月d日 HH:mm</string>
     <string name="title_activity_main2">Main2Activity</string>
 
+
+    <string name="message_zoom_touch_expand">Touch a photo to expand it.</string>
+    <string name="description_image_1">Image 1</string>
+    <string name="description_image_2">Image 2</string>
+    <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
+
 </resources>
