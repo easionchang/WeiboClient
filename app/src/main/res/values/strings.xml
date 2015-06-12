@@ -32,4 +32,8 @@
     <string name="description_image_2">Image 2</string>
     <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
 
+
+    <string name="search_title">搜索</string>
+    <string name="search_hint">输入搜索内容</string>
+
 </resources>

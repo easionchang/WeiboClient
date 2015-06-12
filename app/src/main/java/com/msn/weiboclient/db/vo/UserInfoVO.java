@@ -9,11 +9,11 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "user")
 public class UserInfoVO {
 
-    public static final String ID = "ID";
-    public static final String IDSTR = "IDSTR";
-    public static final String SCREEN_NAME = "SCREEN_NAME";
-    public static final String NAME = "NAME";
-    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+//    public static final String ID = "ID";
+//    public static final String IDSTR = "IDSTR";
+//    public static final String SCREEN_NAME = "SCREEN_NAME";
+//    public static final String NAME = "NAME";
+//    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
 
     @DatabaseField(id = true)

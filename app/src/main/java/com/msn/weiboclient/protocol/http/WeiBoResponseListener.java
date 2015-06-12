@@ -48,10 +48,15 @@ public abstract class WeiBoResponseListener<T extends IWeiBoResponse> implements
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             IWeiBoResponse rsp = gson.fromJson(errorRsp,IWeiBoResponse.class);
+            onError(rsp);
             Log.e("Test", "errorRsp=="+errorRsp) ;
             Toast.makeText(WeiBoApplication.getInstance(),rsp.getError_description(),Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
+            IWeiBoResponse rsp = new IWeiBoResponse();
+            rsp.setError("-1");
+            rsp.setError_code("-1");
+            onError(rsp);
             Toast.makeText(WeiBoApplication.getInstance(),"出错了",Toast.LENGTH_LONG).show();
         }
     }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.msn.support.utils.ResourceUtils;
 import com.msn.weiboclient.R;
 import com.msn.weiboclient.WeiBoApplication;
 
@@ -52,8 +53,9 @@ public class GalleryAnimationActivity extends FragmentActivity{
         mLocation = getIntent().getIntArrayExtra(LOCATION_KEY);
 
         ViewPager galleryViewPager = (ViewPager)findViewById(R.id.gallery_vpager);
+        //galleryViewPager.setPageMargin((int)ResourceUtils.dp2px(getResources(),5));
         if(Build.VERSION.SDK_INT >= 11){
-            //galleryViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+            galleryViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         }
         galleryViewPager.setAdapter(new GalleryViewPageAdapter(getSupportFragmentManager()));
         galleryViewPager.setCurrentItem(mCurrPosition);

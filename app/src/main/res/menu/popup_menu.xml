@@ -1,0 +1,55 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/special_topic"
+        android:title="专题"/>
+
+    <item
+        android:id="@+id/elite"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite2"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite3"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite4"
+        android:title="精选"/>
+
+
+    <item
+        android:id="@+id/elite5"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite6"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite7"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite8"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite9"
+        android:title="精选"/>
+
+    <item
+        android:id="@+id/elite10"
+        android:title="精选"/>
+
+
+    <item
+        android:id="@+id/elite11"
+        android:title="精选"/>
+
+
+
+</menu>

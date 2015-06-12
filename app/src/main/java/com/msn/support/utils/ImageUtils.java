@@ -2,6 +2,7 @@ package com.msn.support.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,6 +12,10 @@ import com.msn.support.gallery.ImageloaderUtils;
  * Created by Msn on 2015/3/13.
  */
 public class ImageUtils {
+
+    public static boolean isThisPictureGif(String url) {
+        return !TextUtils.isEmpty(url) && url.endsWith(".gif");
+    }
 
     /**
      * 获取图片的尺寸

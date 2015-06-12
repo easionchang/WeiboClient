@@ -9,6 +9,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,14 @@ public class AccountActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.tool_bar);
+        toolbar.setLogo(R.drawable.ic_launcher);
+        toolbar.setTitle("选择账号登陆");
+        setSupportActionBar(toolbar);
+
+
+
         Log.e("Test","onCreate...............");
         getSupportLoaderManager().initLoader(LOADER_USER_LIST,null,this).forceLoad();
 
@@ -99,7 +108,7 @@ public class AccountActivity extends ActionBarActivity
     }
 
     private static class UserInfoLoader extends AsyncTaskLoader<List<UserInfoVO>>{
-        //TODO 静态内部类加上若引用防止内存泄露
+        //TODO 静态内部类加上弱引用防止内存泄露
         private Context context;
         public UserInfoLoader(Context context){
             super(context);

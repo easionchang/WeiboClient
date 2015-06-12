@@ -5,7 +5,8 @@
         <item name="android:actionBarStyle" tools:targetApi="11">@style/MyActionBar</item>
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/MyActionBar</item>
-    </style>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>styles.xml
 
     <!-- ActionBar styles -->
     <style name="MyActionBar"

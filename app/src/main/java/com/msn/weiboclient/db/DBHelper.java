@@ -7,6 +7,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.msn.weiboclient.db.vo.StatusTimeLine;
 import com.msn.weiboclient.db.vo.UserInfoVO;
 
 import java.sql.SQLException;
@@ -43,6 +44,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper{
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
             TableUtils.createTable(connectionSource,UserInfoVO.class);
+            TableUtils.createTable(connectionSource,StatusTimeLine.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }

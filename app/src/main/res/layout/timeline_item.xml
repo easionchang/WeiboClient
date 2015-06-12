@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="5dp"
     card_view:cardBackgroundColor="#FEFEFE"
-    card_view:cardCornerRadius="0dp"
+    card_view:cardCornerRadius="2dp"
     card_view:contentPaddingBottom="2dp"
     card_view:contentPaddingTop="2dp">
     <RelativeLayout
@@ -50,7 +50,8 @@
             android:textSize="15sp"
             android:textColor="#ff353535"
             android:lineSpacingMultiplier="1.2"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:autoLink="all"/>
         
         <ImageView
             android:id="@+id/thumbnail_imgv"

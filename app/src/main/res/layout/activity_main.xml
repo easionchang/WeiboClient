@@ -5,13 +5,18 @@
     android:layout_height="match_parent"
     >
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <include layout="@layout/toolbar"/>
     <fragment
         android:id="@+id/content"
         android:name="com.msn.weiboclient.homepage.fragment.MainContentFragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@+id/tool_bar"
         />
-
+    </RelativeLayout>
     <fragment
         android:id="@+id/left_menu"
         android:name="com.msn.weiboclient.homepage.fragment.LeftMenuFragment"

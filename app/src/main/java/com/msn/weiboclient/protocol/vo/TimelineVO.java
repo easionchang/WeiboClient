@@ -10,6 +10,7 @@ import java.util.List;
 public class TimelineVO {
     private String created_at;
     private String id;
+    private String idstr;
     private String text;
     private String source;
     private String favorited;
@@ -145,5 +146,13 @@ public class TimelineVO {
 
     public void setRetweeted_status(TimelineVO retweeted_status) {
         this.retweeted_status = retweeted_status;
+    }
+
+    public String getIdstr() {
+        return idstr;
+    }
+
+    public void setIdstr(String idstr) {
+        this.idstr = idstr;
     }
 }

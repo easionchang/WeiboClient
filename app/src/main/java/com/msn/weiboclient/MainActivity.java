@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
         MainContentFragment fragment = (MainContentFragment)getSupportFragmentManager()
                                             .findFragmentById(R.id.content);
 
-        fragment.showTimeline(getIntent().getStringExtra(ACEESS_TOKEN_TAG));
+        fragment.initTimeline(getIntent().getStringExtra(ACEESS_TOKEN_TAG));
 
         final TextView tv = (TextView)findViewById(R.id.type_class);
         tv.getViewTreeObserver().addOnGlobalLayoutListener(

@@ -4,59 +4,40 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.msn.weiboclient.R;
-import com.msn.weiboclient.common.utils.TimeUtility;
-import com.msn.weiboclient.homepage.adapter.MultiPicsGridViewAdapter;
+import com.msn.weiboclient.db.dao.TimeLineDaoUtil;
 import com.msn.weiboclient.homepage.adapter.WeiboStatusAdapter;
 import com.msn.weiboclient.protocol.http.WeiBoResponseListener;
 import com.msn.weiboclient.protocol.http.XHttpClient;
 import com.msn.weiboclient.protocol.model.FriendsTimelineReq;
 import com.msn.weiboclient.protocol.model.FriendsTimelineRsp;
+import com.msn.weiboclient.protocol.model.base.IWeiBoResponse;
 import com.msn.weiboclient.protocol.vo.TimelineVO;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MainContentFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MainContentFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * 缓存策略：
+ * 加载失败后，如果当前的列表为空（即初始化时）则显示数据库中缓存数据
+ * 每次加载更多都朝数据库中添加数据
+ * 每次刷新先删除所有数据接着添加第一页数据
+ *
  */
 public class MainContentFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private SwipeRefreshLayout swipeContainer;
     private ProgressBar loadingPbar;
     private RecyclerView recyclerView;
@@ -71,20 +52,11 @@ public class MainContentFragment extends Fragment {
     private int mCurrPage;
     private boolean isLoading = false;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MainContentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MainContentFragment newInstance(String param1, String param2) {
         MainContentFragment fragment = new MainContentFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        //args.putString(ARG_PARAM1, param1);
+        //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,74 +65,16 @@ public class MainContentFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void showTimeline(String accessToken){
-        mAccessToken = accessToken;
-        mCurrPage = 1;
-
-        loadTimeLine(mCurrPage,true);
-    }
-
-    private void setListShown(){
-        swipeContainer.startAnimation(AnimationUtils.loadAnimation(
-                getActivity(), android.R.anim.fade_in));
-        loadingPbar.startAnimation(AnimationUtils.loadAnimation(
-                getActivity(), android.R.anim.fade_out));
-        loadingPbar.setVisibility(View.GONE);
-        swipeContainer.setVisibility(View.VISIBLE);
-    }
-
-    private void loadTimeLine(final int page,final boolean isInit){
-        FriendsTimelineReq timelineReq = new FriendsTimelineReq();
-        timelineReq.setAccess_token(mAccessToken);
-        timelineReq.setPage(page+"");
-        XHttpClient.getInstance(this.getActivity()).get(timelineReq, new WeiBoResponseListener<FriendsTimelineRsp>() {
-            @Override
-            public void onSuccess(FriendsTimelineRsp rsp) throws Exception {
-                List<TimelineVO> statuses = rsp.getStatuses();
-                if(page == 1){
-                    timelineVOList.clear();
-                }
-                timelineVOList.addAll(statuses);
-                myAdapter.notifyDataSetChanged();
-
-                if(isInit){
-                    setListShown();
-                }
-                swipeContainer.setRefreshing(false);
-                isLoading = false;
-                //Toast.makeText(MainContentFragment.this.getActivity(),"刷新成功",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private List<String> getText(List<TimelineVO> statuses){
-        List<String> textList = new ArrayList<>();
-        for(TimelineVO vo:statuses){
-            textList.add(vo.getText());
-        }
-        return textList;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_content,container,false);
-
         swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
-        swipeContainer.setColorSchemeColors(Color.rgb(2,199,84),Color.rgb(217,68,55),Color.rgb(73,135,231));
+        swipeContainer.setColorSchemeColors(Color.rgb(2, 199, 84), Color.rgb(217, 68, 55), Color.rgb(73,135,231));
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showTimeline(mAccessToken);
+                refreshTimeline();
             }
         });
 
@@ -193,6 +107,131 @@ public class MainContentFragment extends Fragment {
         swipeContainer.setVisibility(View.GONE);
         return  view;
     }
+
+    /**
+     * 初始化列表，首先显示缓存数据，同时获取最新的数据
+     * @param accessToken
+     */
+    public void initTimeline(String accessToken){
+        Log.e("Test","initTimeline..........");
+        mAccessToken = accessToken;
+        mCurrPage = 1;
+        try {
+            timelineVOList.addAll(TimeLineDaoUtil.findAll(MainContentFragment.this.getActivity(), "1", "1"));
+            myAdapter.notifyDataSetChanged();
+            shownTimelineAnimation(false);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    refreshTimeline();
+                }
+            },1000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** 刷新列表 */
+    public void refreshTimeline(){
+        Log.e("Test","refreshTimeline..........");
+        mCurrPage = 1;
+        timelineVOList.clear();
+        loadTimeLine(mCurrPage, true);
+    }
+
+    private void shownTimelineAnimation(boolean withAnimation){
+        if(withAnimation){
+            swipeContainer.startAnimation(AnimationUtils.loadAnimation(
+                    getActivity(), android.R.anim.fade_in));
+            loadingPbar.startAnimation(AnimationUtils.loadAnimation(
+                    getActivity(), android.R.anim.fade_out));
+            loadingPbar.setVisibility(View.GONE);
+            swipeContainer.setVisibility(View.VISIBLE);
+        }else{
+            loadingPbar.setVisibility(View.GONE);
+            swipeContainer.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void loadTimeLine(final int page,final boolean isInit){
+        FriendsTimelineReq timelineReq = new FriendsTimelineReq();
+        timelineReq.setAccess_token(mAccessToken);
+        //timelineReq.setPage(page+"");//有了max_id就不需要页数来控制了
+        if(timelineVOList.size() != 0){ //加载更多，
+            timelineReq.setMax_id(timelineVOList.get(timelineVOList.size() -1).getIdstr());
+            Log.e("Test", "Max_id=====" + timelineVOList.get(timelineVOList.size() -1).getIdstr());
+        }
+        XHttpClient.getInstance(this.getActivity()).get(timelineReq, new WeiBoResponseListener<FriendsTimelineRsp>() {
+            @Override
+            public void onSuccess(FriendsTimelineRsp rsp) throws Exception {
+                Log.e("Test","onSuccess........");
+                List<TimelineVO> statuses = rsp.getStatuses();
+                if (page == 1) {
+                    //TODO 数据库操作也是IO型阻塞操作，要放在新的线程里，所以使用Loader
+                    TimeLineDaoUtil.deleteAll(MainContentFragment.this.getActivity(),"1","1");
+                    TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(),"1",statuses);
+                    timelineVOList.addAll(statuses);
+                } else {//maxid会导致第一条和上一页的最后一条内容一致
+                    if (statuses.size() > 1) {
+                        TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(),"1",statuses);
+                        timelineVOList.addAll(statuses.subList(1, statuses.size()));
+                    }
+                }
+
+                myAdapter.notifyDataSetChanged();
+
+                if (isInit) {
+                    shownTimelineAnimation(true);
+                }
+                swipeContainer.setRefreshing(false);
+                isLoading = false;
+                //Toast.makeText(MainContentFragment.this.getActivity(),"刷新成功",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(IWeiBoResponse rsp) {
+                Log.e("Test",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>.onError");
+                //出现异常，并且list为空，则从数据库中查询
+                try {
+                    if(timelineVOList.size() == 0){
+                        timelineVOList.addAll(TimeLineDaoUtil.findAll(MainContentFragment.this.getActivity(), "1", "1"));
+                        myAdapter.notifyDataSetChanged();
+                        shownTimelineAnimation(true);
+                        swipeContainer.setRefreshing(false);
+                        isLoading = false;
+
+
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private List<String> getText(List<TimelineVO> statuses){
+        List<String> textList = new ArrayList<>();
+        for(TimelineVO vo:statuses){
+            textList.add(vo.getText());
+        }
+        return textList;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            //mParam1 = getArguments().getString(ARG_PARAM1);
+            //mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+
+
 
 
 

@@ -118,13 +118,13 @@ public class WeiboStatusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         myViewHolder.mThumbnailGrdv.setVisibility(View.GONE);
         myViewHolder.mThumbnailImgv.setVisibility(View.GONE);
         if(timelineVO.hasPicture()){
-            if(timelineVO.isMultiPics()){
+            if(timelineVO.isMultiPics()){       //多图模式
                 myViewHolder.mThumbnailGrdv.setVisibility(View.VISIBLE);
                 myViewHolder.mThumbnailGrdv.setAdapter(
                         new MultiPicsGridViewAdapter(
                                 mContext,
                                 timelineVO.getPic_urls()));
-            }else{
+            }else{                              //单图模式
                 myViewHolder.mThumbnailImgv.setVisibility(View.VISIBLE);
                 ImageLoader.getInstance().displayImage(
                         timelineVO.getPic_urls().get(0).getThumbnail_pic(),

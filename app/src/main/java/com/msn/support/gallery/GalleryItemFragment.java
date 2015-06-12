@@ -3,20 +3,13 @@ package com.msn.support.gallery;
 
 import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.msn.support.utils.DisplayUtil;
 import com.msn.support.utils.ImageUtils;
@@ -27,6 +20,10 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
+import java.io.File;
+import java.io.IOException;
+
+import pl.droidsonroids.gif.GifDrawable;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -39,6 +36,9 @@ public class GalleryItemFragment extends Fragment {
     private static final String ARG_IMG_URL = "ARG_IMG_URL";
     private static final String ARG_IMG_LOCATION = "ARG_IMG_LOCATION";
 
+    /** 显示图片是否附带动画，如果使用动画请在manitest文件中使用android:theme="@style/CommonGalleryTheme"
+     * 并设置将galery_animate布局文件背景色android:background="#000"去掉 */
+    private boolean isShowWithAnimate = false;
     private String mImgUrl;
     private int[] mLocation;
     private PhotoView itemImgv;
@@ -98,45 +98,77 @@ public class GalleryItemFragment extends Fragment {
                     });
                     ObjectAnimator alpha = ObjectAnimator.ofInt(mParentView.getBackground(), "alpha", 255, 0);
                     alpha.start();
+                }else{
+                    getActivity().finish();
                 }
-                //getActivity().finish();
+
             }
         });
         itemProgressView = (DonutProgress)view.findViewById(R.id.item_pbar);
 
         if(ImageloaderUtils.isImageCached(mImgUrl)){
             itemProgressView.setVisibility(View.GONE);
-            ImageLoader.getInstance().displayImage(mImgUrl,itemImgv);
+            if(isShowWithAnimate){
+                showImgWithAnimate(view, itemImgv, mLocation);
+            }else{
+                showImgWithoutAinimate(view, itemImgv, mLocation);
+            }
+
             //itemImgv.setLayoutParams(new FrameLayout.LayoutParams(mLocation[2],mLocation[3]));
             //itemImgv.setX(mLocation[0]);
             //Y的值是相对屏幕的坐标，而不是父View；所以要减去状态栏的高度（标题栏在该页面不显示）
             //itemImgv.setY(mLocation[1] - DisplayUtil.getStatusBarHeight());
             //view.getBackground().setAlpha(10);
-            startAnimate(view,itemImgv,mLocation);
-        }else{
-            ImageLoader.getInstance().displayImage(mImgUrl,itemImgv, null,new ImageLoadingListener() {
-                        public void onLoadingStarted(String imageUri, View view) {}
-                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {}
-                        public void onLoadingCancelled(String imageUri, View view) {}
 
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            itemProgressView.setVisibility(View.GONE);
-                        }
-                    },
-                    new ImageLoadingProgressListener() {
-                        @Override
-                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                            //Log.e("Test","url="+imageUri+" current="+current+" total="+total+" progress="+(int)(current*100.0f/total));
-                            itemProgressView.setProgress((int)(current*100.0f/total));
-                        }
-                    });
+        }else{
+            showLoading(view, itemImgv, mLocation);
         }
         mParentView = view;
         return view;
     }
 
+    private void showLoading(final View parentView, final ImageView itemImgv, final int[] location){
+        ImageLoader.getInstance().displayImage(mImgUrl,itemImgv, null,new ImageLoadingListener() {
+                    public void onLoadingStarted(String imageUri, View view) {}
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {}
+                    public void onLoadingCancelled(String imageUri, View view) {}
 
-    private void startAnimate(final View parentView,final ImageView itemImgv,final int[] location) {
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                        itemProgressView.setVisibility(View.GONE);
+                        if(ImageUtils.isThisPictureGif(mImgUrl)){
+                            showGif();
+                        }
+                    }
+                },
+                new ImageLoadingProgressListener() {
+                    @Override
+                    public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                        //Log.e("Test","url="+imageUri+" current="+current+" total="+total+" progress="+(int)(current*100.0f/total));
+                        itemProgressView.setProgress((int)(current*100.0f/total));
+                    }
+                });
+    }
+
+    private void showImgWithoutAinimate(final View parentView, final ImageView itemImgv, final int[] location){
+        if(ImageUtils.isThisPictureGif(mImgUrl)){
+            showGif();
+        }else{
+            ImageLoader.getInstance().displayImage(mImgUrl, itemImgv);
+        }
+    }
+
+    private void showGif(){
+        try {
+            GifDrawable gifFromFile = new GifDrawable(ImageloaderUtils.getImageDiscCached(mImgUrl));
+            itemImgv.setImageDrawable(gifFromFile);
+        } catch (IOException e) {
+            //Log.e("Test","");
+            e.printStackTrace();
+        }
+    }
+
+    private void showImgWithAnimate(final View parentView, final ImageView itemImgv, final int[] location) {
         Log.e("Test", "itemImgv.heigh" +
                 "t=" + itemImgv.getHeight() + " itemImgv.width=" + itemImgv.getWidth());
         int startWidth = location[2];
