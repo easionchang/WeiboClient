@@ -23,7 +23,8 @@ public class TimeLineDaoUtil {
         Gson gson = new Gson();
         Dao<StatusTimeLine,String> timelineDao =  DBHelper.getDao(context, StatusTimeLine.class,String.class);
         QueryBuilder<StatusTimeLine,String> queryBuilder = timelineDao.queryBuilder();
-        queryBuilder.where().eq(StatusTimeLine.COUNT_ID,accountId);
+        queryBuilder.where().eq(StatusTimeLine.COUNT_ID, accountId);
+        queryBuilder.orderBy(StatusTimeLine.MSG_ID,false);
         List<StatusTimeLine> timeLineList = queryBuilder.query();
         List<TimelineVO> voList = new ArrayList<>();
         for(StatusTimeLine timeLine:timeLineList){

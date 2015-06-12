@@ -60,8 +60,8 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         MainContentFragment fragment = (MainContentFragment)getSupportFragmentManager()
                                             .findFragmentById(R.id.content);
-
-        fragment.initTimeline(getIntent().getStringExtra(ACEESS_TOKEN_TAG));
+        //TODO 最好写进MainContentFragment里
+        fragment.init(getIntent().getStringExtra(ACEESS_TOKEN_TAG));
 
         final TextView tv = (TextView)findViewById(R.id.type_class);
         tv.getViewTreeObserver().addOnGlobalLayoutListener(
