@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.msn.weiboclient.R;
 import com.msn.weiboclient.db.dao.TimeLineDaoUtil;
@@ -34,10 +35,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 缓存策略：
- * 加载失败后，如果当前的列表为空（即初始化时）则显示数据库中缓存数据
- * 每次加载更多都朝数据库中添加数据
- * 每次刷新先删除所有数据接着添加第一页数据
+ * 缓存策略：<br>
+ * 最多只保存2000条缓存，大于2000后刷新重构缓存<br>
+ * 首先初始化加载缓存中的数据
+ * <ul>
+ *    <li>当用户或者系统kill进程后重新进入应用：<br>
+ *        刷新获取最新数据+缓存数据
+ *    <li>当进程没有被Kill时进入应用：<br>
+ *        显示缓存数据，并定位到用户上次查看的位置
+ * <ul/>
  *
  */
 public class MainContentFragment extends Fragment {
@@ -48,11 +54,14 @@ public class MainContentFragment extends Fragment {
     /** 初始化 */
     public static final int TYPE_INIT = 2;
 
+    /** 记录上次查看的位置 */
+    private static TimelinePosition cacheTimelinePosition;
+
 
     private SwipeRefreshLayout swipeContainer;
     private ProgressBar loadingPbar;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private List<TimelineVO> timelineVOList = new ArrayList<>();
     private WeiboStatusAdapter myAdapter;
 
@@ -110,7 +119,8 @@ public class MainContentFragment extends Fragment {
                         loadTimeLine(TYPE_LOAD_MORE);
                     }
                 }
-
+                setPosition();
+                Log.e("Test","getScrollY================"+recyclerView.getScrollY());
             }
         });
 
@@ -119,15 +129,42 @@ public class MainContentFragment extends Fragment {
         return  view;
     }
 
+    private void setPosition(){
+        int childPosition = mLayoutManager.findFirstVisibleItemPosition();
+        int top = mLayoutManager.getChildAt(0).getTop();
+        TimelinePosition position = new TimelinePosition();
+        position.firstChildPosition = childPosition;
+        position.firstChildTop = top;
 
+        cacheTimelinePosition = position;
+    }
+
+
+    /*** 初始化加载缓存中的数据*/
     public void init(String accessToken){
         try {
-            timelineVOList.addAll(TimeLineDaoUtil.findAll(MainContentFragment.this.getActivity(), "1", "1"));
+            initMemoryFromCache();
             myAdapter.notifyDataSetChanged();
-            refreshTimeline(accessToken,TYPE_INIT);
+            if(cacheTimelinePosition == null){//重启了应用
+                refreshTimeline(accessToken,TYPE_INIT);
+            }else{
+                Toast
+                        .makeText(this.getActivity(), "亲，接着上次继续看吧", Toast.LENGTH_SHORT).show();
+                mLayoutManager.scrollToPositionWithOffset(cacheTimelinePosition.firstChildPosition, cacheTimelinePosition.firstChildTop);
+                shownTimelineAnimation(true);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isPositionToLasttime(){
+        boolean rePosition = true;
+        if(cacheTimelinePosition == null){ //重启了应用
+            rePosition = false;
+        }
+        return rePosition;
     }
 
 
@@ -172,7 +209,7 @@ public class MainContentFragment extends Fragment {
                 Log.e("Test","onSuccess........loadType="+loadType);
                 List<TimelineVO> statuses = rsp.getStatuses();
                 if (loadType == TYPE_INIT || loadType == TYPE_REFRESH) {
-                    merg(statuses);
+                    merge(statuses);
                 } else {//maxid会导致第一条和上一页的最后一条内容一致
                     if (statuses.size() > 1) {
                         TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(),"1",statuses);
@@ -201,14 +238,14 @@ public class MainContentFragment extends Fragment {
     }
 
 
-    private void merg(List<TimelineVO> newStatuses) throws SQLException{
-        if(timelineVOList.size() == 0){//没有缓存数据，直接添加
-            addMemoryAndCache(newStatuses);
+    private void merge(List<TimelineVO> newStatuses) throws SQLException{
+        if(newStatuses.size() == 0){
+            Log.e("Test","NO====newStatuses");
             return;
         }
 
-        if(newStatuses.size() == 0){
-            Log.e("Test","NO====newStatuses");
+        if(timelineVOList.size() == 0){//没有缓存数据，直接添加
+            addMemoryAndCache(newStatuses);
             return;
         }
 
@@ -227,11 +264,18 @@ public class MainContentFragment extends Fragment {
 
         }
         if(splitIndex != -1){ //加载
-            Log.e("Test","splitIndex===="+splitIndex);
             addMemoryAndCache(newStatuses.subList(0,splitIndex));
         }else{//重构缓存
             refactorMemoryAndCache(newStatuses);
+            Snackbar snack = Snackbar.make(swipeContainer, "太多数据了，重构了缓存", Snackbar.LENGTH_LONG);
+            snack.show();
         }
+    }
+
+
+    private void initMemoryFromCache()throws SQLException{
+        //TODO 数据库操作也是IO型阻塞操作，要放在新的线程里，所以使用Loader
+        timelineVOList.addAll(TimeLineDaoUtil.findAll(MainContentFragment.this.getActivity(), "1", "1"));
     }
 
     private void addMemoryAndCache(List<TimelineVO> newStatuses)throws SQLException{
@@ -302,6 +346,11 @@ public class MainContentFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    class TimelinePosition{
+        public int firstChildPosition;
+        public int firstChildTop;
     }
 
 }
