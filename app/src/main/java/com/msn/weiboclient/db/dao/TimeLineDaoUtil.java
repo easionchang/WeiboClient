@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.msn.weiboclient.WeiBoApplication;
 import com.msn.weiboclient.db.DBHelper;
 import com.msn.weiboclient.db.vo.StatusTimeLine;
 import com.msn.weiboclient.protocol.vo.TimelineVO;
@@ -19,9 +20,9 @@ import java.util.List;
  */
 public class TimeLineDaoUtil {
 
-    public static List<TimelineVO> findAll(Context context,String accountId,String groupId) throws SQLException{
+    public static List<TimelineVO> findAll(String accountId,String groupId) throws SQLException{
         Gson gson = new Gson();
-        Dao<StatusTimeLine,String> timelineDao =  DBHelper.getDao(context, StatusTimeLine.class,String.class);
+        Dao<StatusTimeLine,String> timelineDao =  DBHelper.getDao(WeiBoApplication.getInstance(), StatusTimeLine.class,String.class);
         QueryBuilder<StatusTimeLine,String> queryBuilder = timelineDao.queryBuilder();
         queryBuilder.where().eq(StatusTimeLine.COUNT_ID, accountId);
         queryBuilder.orderBy(StatusTimeLine.MSG_ID,false);
@@ -33,16 +34,16 @@ public class TimeLineDaoUtil {
         return voList;
     }
 
-    public static void deleteAll(Context context,String accountId,String groupId) throws SQLException {
-        Dao<StatusTimeLine,String> timelineDao =  DBHelper.getDao(context, StatusTimeLine.class,String.class);
+    public static void deleteAll(String accountId,String groupId) throws SQLException {
+        Dao<StatusTimeLine,String> timelineDao =  DBHelper.getDao(WeiBoApplication.getInstance(), StatusTimeLine.class,String.class);
         DeleteBuilder<StatusTimeLine,String> deleteBuilder = timelineDao.deleteBuilder();
         deleteBuilder.where().eq(StatusTimeLine.COUNT_ID,accountId);
         deleteBuilder.delete();
     }
 
-    public static void addTimeLine(Context context,String accountId,List<TimelineVO> voList) throws SQLException{
+    public static void addTimeLine(String accountId,String groupId,List<TimelineVO> voList) throws SQLException{
         Gson gson = new Gson();
-        Dao<StatusTimeLine,String> timelineDao =  DBHelper.getDao(context, StatusTimeLine.class,String.class);
+        Dao<StatusTimeLine,String> timelineDao =  DBHelper.getDao(WeiBoApplication.getInstance(), StatusTimeLine.class,String.class);
         for (TimelineVO vo: voList) {
             StatusTimeLine timeLine = new StatusTimeLine();
             timeLine.setCountId(accountId);

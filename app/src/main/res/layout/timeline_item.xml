@@ -95,7 +95,8 @@
             android:textColor="#ff353535"
             android:lineSpacingMultiplier="1.2"
             android:layout_margin="5dp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:autoLink="all"/>
         <ImageView
             android:id="@+id/repost_imgv"
             android:layout_width="150dp"

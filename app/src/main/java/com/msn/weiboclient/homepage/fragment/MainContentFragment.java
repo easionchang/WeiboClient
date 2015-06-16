@@ -1,22 +1,24 @@
 package com.msn.weiboclient.homepage.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -54,8 +56,13 @@ public class MainContentFragment extends Fragment {
     /** 初始化 */
     public static final int TYPE_INIT = 2;
 
+    public static final int FIND_ALL_LOADER = 0;
+    public static final int REFACTOR_LOADER = 1;
+    public static final int ADD_LOADER = 2;
+
     /** 记录上次查看的位置 */
     private static TimelinePosition cacheTimelinePosition;
+
 
 
     private SwipeRefreshLayout swipeContainer;
@@ -120,7 +127,6 @@ public class MainContentFragment extends Fragment {
                     }
                 }
                 setPosition();
-                Log.e("Test","getScrollY================"+recyclerView.getScrollY());
             }
         });
 
@@ -128,6 +134,9 @@ public class MainContentFragment extends Fragment {
         swipeContainer.setVisibility(View.GONE);
         return  view;
     }
+
+
+
 
     private void setPosition(){
         int childPosition = mLayoutManager.findFirstVisibleItemPosition();
@@ -212,8 +221,9 @@ public class MainContentFragment extends Fragment {
                     merge(statuses);
                 } else {//maxid会导致第一条和上一页的最后一条内容一致
                     if (statuses.size() > 1) {
-                        TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(),"1",statuses);
-                        timelineVOList.addAll(statuses.subList(1, statuses.size()));
+                        //TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(),"1",statuses);
+                        //timelineVOList.addAll(statuses.subList(1, statuses.size()));
+                        add2LastMemoryAndCache(statuses.subList(1, statuses.size()));
                     }
                 }
 
@@ -229,6 +239,7 @@ public class MainContentFragment extends Fragment {
             @Override
             public void onError(IWeiBoResponse rsp) {
                 Log.e("Test", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>.onError");
+                swipeContainer.setRefreshing(false);
                 //出现异常，显示缓存数据
                 if (loadType == TYPE_INIT || loadType == TYPE_REFRESH) {
                     shownTimelineAnimation(true);
@@ -275,20 +286,28 @@ public class MainContentFragment extends Fragment {
 
     private void initMemoryFromCache()throws SQLException{
         //TODO 数据库操作也是IO型阻塞操作，要放在新的线程里，所以使用Loader
-        timelineVOList.addAll(TimeLineDaoUtil.findAll(MainContentFragment.this.getActivity(), "1", "1"));
+        timelineVOList.addAll(TimeLineDaoUtil.findAll("1", "1"));
     }
 
     private void addMemoryAndCache(List<TimelineVO> newStatuses)throws SQLException{
         timelineVOList.addAll(0,newStatuses);
         //TODO 数据库操作也是IO型阻塞操作，要放在新的线程里，所以使用Loader
-        TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(),"1",newStatuses);
+        //TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(),"1","1",newStatuses);
+        TimelineDBTask.asyncReplace(TimelineDBTask.ADD_TYPE,"1","1",newStatuses);
+    }
+
+    private void add2LastMemoryAndCache(List<TimelineVO> newStatuses){
+        TimelineDBTask.asyncReplace(TimelineDBTask.ADD_TYPE, "1", "1", newStatuses);
+        timelineVOList.addAll(newStatuses);
     }
 
     private void refactorMemoryAndCache(List<TimelineVO> newStatuses)throws SQLException{
         timelineVOList.clear();
+        timelineVOList.addAll(0,newStatuses);
         //TODO 数据库操作也是IO型阻塞操作，要放在新的线程里，所以使用Loader
-        TimeLineDaoUtil.deleteAll(MainContentFragment.this.getActivity(),"1","1");
-        addMemoryAndCache(newStatuses);
+        //TimeLineDaoUtil.deleteAll(MainContentFragment.this.getActivity(),"1","1");
+        //TimeLineDaoUtil.addTimeLine(MainContentFragment.this.getActivity(), "1", "1", newStatuses);
+        TimelineDBTask.asyncReplace(TimelineDBTask.REFACTOR_TYPE,"1","1",newStatuses);
     }
 
     private List<String> getText(List<TimelineVO> statuses){

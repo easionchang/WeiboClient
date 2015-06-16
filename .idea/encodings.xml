@@ -5,5 +5,6 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/msn/weiboclient/SearchActivity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/msn/weiboclient/db/vo/StatusTimeLine.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/msn/weiboclient/homepage/adapter/WeiboTimeLineListNavAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/msn/weiboclient/homepage/fragment/TimelineDBTask.java" charset="UTF-8" />
   </component>
 </project>

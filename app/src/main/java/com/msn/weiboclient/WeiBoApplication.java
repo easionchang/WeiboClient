@@ -59,7 +59,7 @@ public class WeiBoApplication extends Application {
                 .diskCacheSize(100 * 1024 * 1024) //缓存到文件的最大数据
                 .diskCacheFileCount(1000)            //文件数量
                 .defaultDisplayImageOptions(options)  //上面的options对象，一些属性配置
-                .writeDebugLogs() // Remove for release app
+                //.writeDebugLogs() // Remove for release app
                 .build();
 
         ImageLoader.getInstance().init(config); //初始化
