@@ -23,6 +23,21 @@
             android:layout_margin="5dp"/>
 
         <TextView
+            android:id="@+id/repost_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="5dp"
+            android:drawableLeft="@drawable/timeline_repost_light"
+            android:text="333333333"/>
+        <TextView
+            android:id="@+id/comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/repost_count"
+            android:drawableLeft="@drawable/timeline_comment_light"/>
+
+        <TextView
             android:id="@+id/name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

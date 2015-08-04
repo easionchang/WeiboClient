@@ -2,7 +2,7 @@
 <resources>
     <color name="action_bar_bk">#ffaa66cc</color>
 
-
+    <color name="transparent">#00000000</color>
     <color name="primary">#3F51B5</color>
     <color name="primary_dark">#303F9F</color>
     <color name="primary_light">#C5CAE9</color>

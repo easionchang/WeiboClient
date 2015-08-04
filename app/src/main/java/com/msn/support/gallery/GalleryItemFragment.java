@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.msn.support.utils.DisplayUtil;
 import com.msn.support.utils.ImageUtils;
@@ -134,10 +135,13 @@ public class GalleryItemFragment extends Fragment {
                     public void onLoadingCancelled(String imageUri, View view) {}
 
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
+                        Log.e("Test","onLoadingComplete..............");
                         itemProgressView.setVisibility(View.GONE);
                         if(ImageUtils.isThisPictureGif(mImgUrl)){
                             showGif();
+                        }else if(ImageloaderUtils.isLargePicture(mImgUrl)){
+                            Toast.makeText(GalleryItemFragment.this.getActivity(),"大图注意注意",Toast.LENGTH_SHORT).show();
+                            showLargePicture();
                         }
                     }
                 },
@@ -151,8 +155,12 @@ public class GalleryItemFragment extends Fragment {
     }
 
     private void showImgWithoutAinimate(final View parentView, final ImageView itemImgv, final int[] location){
+        Log.e("Test","showImgWithoutAinimate..............");
         if(ImageUtils.isThisPictureGif(mImgUrl)){
             showGif();
+        }else if(ImageloaderUtils.isLargePicture(mImgUrl)){
+            Toast.makeText(this.getActivity(),"大图注意注意",Toast.LENGTH_SHORT).show();
+            showLargePicture();
         }else{
             ImageLoader.getInstance().displayImage(mImgUrl, itemImgv);
         }
@@ -166,6 +174,11 @@ public class GalleryItemFragment extends Fragment {
             //Log.e("Test","");
             e.printStackTrace();
         }
+    }
+
+    private void showLargePicture(){
+        itemImgv.setVisibility(View.GONE);
+        getChildFragmentManager().beginTransaction().replace(R.id.child,LargePictureFragment.newInstance(mImgUrl)).commitAllowingStateLoss();
     }
 
     private void showImgWithAnimate(final View parentView, final ImageView itemImgv, final int[] location) {

@@ -13,6 +13,7 @@ import com.msn.support.gallery.ImageloaderUtils;
  */
 public class ImageUtils {
 
+
     public static boolean isThisPictureGif(String url) {
         return !TextUtils.isEmpty(url) && url.endsWith(".gif");
     }

@@ -18,6 +18,8 @@ public class TimelineVO {
     private String in_reply_to_status_id;
     private String in_reply_to_user_id;
     private String in_reply_to_screen_name;
+    private int reposts_count;//转发数
+    private int comments_count;//评论数
     private List<ThumbnailVO> pic_urls;
     private UserInfoVO user;
 
@@ -154,5 +156,22 @@ public class TimelineVO {
 
     public void setIdstr(String idstr) {
         this.idstr = idstr;
+    }
+
+
+    public int getComments_count() {
+        return comments_count;
+    }
+
+    public void setComments_count(int comments_count) {
+        this.comments_count = comments_count;
+    }
+
+    public int getReposts_count() {
+        return reposts_count;
+    }
+
+    public void setReposts_count(int reposts_count) {
+        this.reposts_count = reposts_count;
     }
 }
